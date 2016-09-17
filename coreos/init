@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+mkdir /etc/profile.d
+cat > /etc/profile.d/default.sh  <<EOF
+[ -e "$HOME/.bashrc" ] && source "$HOME/.bashrc"
+EOF

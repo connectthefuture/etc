@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+case "$1" in
+  poweroff ) ssh root@box poweroff ;;
+  reboot ) ssh root@box reboot;
+esac

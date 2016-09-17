@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+print_help() {
+  cat << EOF
+bench, Benchmark Tool
+
+  $ bench disk                  # use dd to test read/write speed.
+EOF
+}
+
+case "$1" in
+"disk" )
+  dd if=/dev/zero of=a.bin bs=1M count=1000 conv=fdatasync,notrunc
+  echo 3 | sudo tee /proc/sys/vm/drop_caches && dd if=a.bin of=/dev/null bs=1M count=1000
+;;
+* )
+  print_help
+;;
+esac

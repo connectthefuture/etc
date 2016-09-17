@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+
+check_network(){
+  ping -q -w 1 -c 1 www.google.com &>/dev/null
+
+  if [[ "$?" != 0 ]]; then
+    echo "Skip: no network is connected." >&2
+    exit 11
+  fi
+}
+
+check_x11(){
+  ps -C X &>/dev/null
+
+  if [[ "$?" != 0 ]]; then
+    echo "Skip: no X11 is running." >&2
+    exit 11
+  fi
+}
+
+check_once(){
+  if [[ -f /var/$USER/$JOB.timestamp ]]; then
+    timestamp=`cat /var/$USER/$JOB.timestamp`
+    if [[ $timestamp == $(date +'%Y-%m-%d') ]]; then
+      echo "SKIP: It was runned at $timestamp" >&2
+      exit 0
+    fi
+  fi
+}
+
+once_mark(){
+  date +'%Y-%m-%d' > /var/$USER/$JOB.timestamp
+}
+
+print_help(){
+  cat <<EOF
+Usage: run_once [options] cmd [arg ...]
+
+  -c once,network,x11       # checker
+  -m <job>                  # mark as done. for once.
+EOF
+}
+
+
+#####
+## main
+####
+
+typeset -A opts
+
+while getopts "hc:m:" opt; do
+  case $opt in
+    c )
+      for name in ${(ps:,:)OPTARG}; do
+        opts[check_$name]=true
+        "check_$name"
+      done
+      ;;
+    m )
+      JOB=$OPTARG once_mark
+      echo "marked"
+      ;;
+    h ) print_help ;;
+  esac
+done
+
+shift $(( OPTIND-1 ))
+
+$@
+
+if [[ $? == 0 ]] && [[ $opts[check_once] = true ]]; then
+  once_mark
+fi

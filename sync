@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+HOST="umac"
+#HOST="smacpro"
+
+cmd="rsync -avhP --exclude node_modules --exclude bower_components --exclude .git --exclude .meteor --exclude /bazel --exclude /deb --exclude jspm_packages --exclude tmp --exclude dist --exclude '*.swp'"
+rsyncReadme="rsync -aP --include '*/' --include '__readme__.md' --exclude '*'"
+
+mac() {
+  $cmd ~/a/ $HOST:a/
+  $cmd ~/0/ $HOST:0/
+  #$rsyncReadme ~/dev/src/ $HOST:dev/src/
+}
+
+udev() {
+  $cmd $HOST:a/ ~/a/
+  $cmd $HOST:0/ ~/0/
+  #$rsyncReadme $HOST:dev/src/ ~/dev/src/
+}
+
+case "$1" in
+  mac ) mac ;;
+  udev ) udev ;;
+esac

@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+whatmp3 --V0 --notorrent "$@"

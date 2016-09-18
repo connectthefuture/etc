@@ -1,0 +1,2 @@
+#!/bin/zsh
+curl -s http://counter.sina.com.cn/ip | iconv  -f gbk -t utf8 | sed -r 's/.*Array\("([^"]*)".*/\1/'

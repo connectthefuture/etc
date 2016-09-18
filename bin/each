@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+# lib
+filename() {
+	base=$(basename "$1")
+	echo ${base%.*}
+}
+
+extname() {
+	base=$(basename "$1")
+	[[ "$base" =~ \. ]] && echo "${base##*.}" || echo ""
+}
+
+# main
+main() {
+	# split args by '!' into cmds0, cmds1, ..
+	index=0
+	for arg in "$@"; do
+		if [[ "$arg" == "!" ]]; then
+			((index++))
+			continue
+		fi
+
+		cmds="cmds$index"
+		eval "$cmds+=(\"$arg\")"
+	done
+	[[ -z "$cmds0" ]] && cmds0=(echo @@) && ((index++))
+
+	while read path; do
+		dir=$(dirname "$path")
+		base=$(basename "$path")
+		name=$(filename "$path")
+		ext=$(extname "$path")
+
+		for i in `seq 0 $index`; do
+			cmds="cmds$i[@]"
+			cur_cmds=()
+			for arg in "${!cmds}"; do
+				arg=${arg//@@/$path}
+				arg=${arg//@d/$dir}
+				arg=${arg//@b/$base}
+				arg=${arg//@n/$name}
+				arg=${arg//@e/$ext}
+				cur_cmds+=("$arg")
+			done
+
+			"${cur_cmds[@]}"
+		done
+	done
+}
+
+main "$@"

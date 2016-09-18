@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+case $1 in
+  "" | ls ) transmission-remote box -tactive -l ;;
+  lsall ) transmission-remote box -l ;;
+  cli ) transmission-remote-cli -c box ;;
+  * ) transmission-remote box "$@" ;;
+esac

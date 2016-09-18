@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+# Bash
+######
+
+mkdir -p /etc/profile.d
+cat > /etc/profile.d/default.sh  <<EOF
+[ -e "$HOME/.bashrc" ] && source "$HOME/.bashrc"
+EOF
+
+# Docker
+######
+
+mkdir -p /etc/systemd/system/docker.service.d
+cat > /etc/systemd/system/docker.service.d/override.conf <<EOF
+[Service]
+ExecStart=
+ExecStart=/usr/lib/coreos/dockerd --host=fd:// $DOCKER_OPTS $DOCKER_CGROUPS $DOCKER_OPT_BIP $DOCKER_OPT_MTU $DOCKER_OPT_IPMASQ --registry-mirror="https://rnk38d6l.mirror.aliyuncs.com"
+EOF
+
+systemctl daemon-reload
+systemctl restart docker
+
+# Update
+######
+
+cat > /etc/coreos/update.conf <<EOF
+GROUP=alpha
+REBOOT_STRATEGY=best-effort
+EOF
+
+systemctl restart update-engine

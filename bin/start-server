@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+cd /app/server
+sudo echo
+sudo caddy -port 80 &>/dev/null &
+#chokidar Caddyfile -c 'killall caddy; caddy -port 80 &>/dev/null' &>/dev/null &
+#sudo chokidar Caddyfile -c "kill `ps ax  | grep caddy | head -1 | awk '{print $1}'`; caddy -port 80" --initial

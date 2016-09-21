@@ -1,0 +1,22 @@
+#!/bin/bash
+
+print_usage() {
+  cat <<EOF
+run, Run a GUI application
+
+  $ run firefox
+EOF
+}
+
+main() {
+  $* &>/dev/null &
+}
+
+case "$1" in
+"" )
+  print_usage
+;;
+* )
+  main $*
+;;
+esac

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+curl http://dynamicdns.park-your-domain.com/getip

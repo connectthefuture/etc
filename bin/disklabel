@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+function disklabel {
+  device="$1"
+  label="$2"
+  type=$(blkid -s TYPE -o value "$device")
+  case "$type" in
+    ext2 | ext3 | ext4 )
+      e2label "$device" "$label" ;;
+    swap )
+      swaplabel -L "$label" "$device" ;;
+    fat | vfat )
+      dosfslabel "$device" "$label" ;;
+    ntfs )
+      ntfslabel "$device" "$label" ;;
+  esac
+}
+
+disklabel "$@"

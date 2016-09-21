@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+#
+# run the job once in every 24 hours.
+#
+# USAGE
+#
+#   # mkdir /var/lib/run-once
+#   $ run-once hello 24 cmd arg ...
+#
+
+set -e
+
+if ((${#@} < 3)); then
+  cat <<EOF
+USAGE:
+  $ run-once <name> <hours> <cmd arg ...>
+EOF
+  exit 0
+fi
+
+name="$1"; shift
+interval="$1"; shift
+stat_file="/var/lib/run-once/${name}.timestamp"
+interval=$(( $interval * 3600 ))
+
+# check stat_file
+if [[ -e "$stat_file" ]]; then
+  last_time=$(cat "$stat_file")
+  now_time=$(date +%s)
+  dur=$(($now_time - $last_time))
+  if (($dur <= $interval)); then
+    echo "$name has $(($interval-$dur)) seconds left."
+    exit 0
+  fi
+fi
+
+# run cmd
+$@
+
+# write state_file
+if [[ $? == 0 ]]; then
+  date +%s > $stat_file
+fi

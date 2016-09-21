@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+files="randomid/randomid run-once/run-once each/each disklabel/disklabel git-change-author/git-change-author notify-run/notify-run"
+
+build() {
+  :
+}
+
+package() {
+  distribution=$1; prefix="$2"
+  [[ "$prefix" == "" ]] && echo "ERROR: USAGE is ./ake package <distribution> <prefix>" && exit 1
+  case "$distribution" in
+    ubuntu ) lib="lib" ;;
+    * ) lib="usr/lib" ;;
+  esac
+
+  mkdir -p "$prefix/usr/bin"
+  cp $files "$prefix/usr/bin"
+}
+
+install() {
+  for file in "$files"; do
+    ln -sfv `pwd`/$file ~/bin
+  done
+}
+
+case "$1" in
+  b | build ) build ;;
+  p | package ) shift; package "$@" ;;
+  i | install ) install ;;
+esac

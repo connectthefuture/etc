@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+# lib
+absolutename() {
+	readlink -f "$1"
+}
+
+extname() {
+	base=$(basename "$1")
+	[[ "$base" =~ \. ]] && echo "${base##*.}" || echo ""
+}
+
+# main
+main() {
+	src=`absolutename "$1"`
+	ext=`extname "$1"`
+	dest="/tmp/a.$ext"
+	ln -sf "$src" "$dest"
+	echo "$dest"
+}
+
+main "$@"

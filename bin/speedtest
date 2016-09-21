@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# http://www.azurespeed.com/Azure/Download
+# https://www.linode.com/speedtest
+
+case "$1" in
+  "" ) speedtest-cli --server 3633 ;;
+  "cn" ) curl http://mirrors.163.com/archlinux/iso/latest/archlinux-2013.03.01-dual.iso -o /dev/null ;;
+  "vpn" ) curl http://vpn/a.bin -o /dev/null ;;
+  "us" ) curl http://speedtest.fremont.linode.com/100MB-fremont.bin -o /dev/null ;;
+  "jp" ) curl http://speedtest.tokyo.linode.com/100MB-tokyo.bin -o /dev/null ;;
+esac
